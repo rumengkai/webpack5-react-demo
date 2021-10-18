@@ -2,11 +2,13 @@
 
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
+const { resolveApp } = require('./paths');
 
 module.exports = merge(common, {
+  mode: 'production',
   // 输出
   output: {
-    // bundle 文件名称 【只有这里和开发环境不一样】
+    // 区分版本和变动，目的是清缓存
     filename: '[name].[contenthash].bundle.js',
 
     // bundle 文件路径

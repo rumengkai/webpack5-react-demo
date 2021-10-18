@@ -2,9 +2,11 @@
 
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
-import { resolveApp } from '../paths'
+const { resolveApp } = require('./paths');
+const path = require('path')
 
 module.exports = merge(common, {
+  mode: 'development',
   // 输出
   output: {
     // bundle 文件名称
@@ -16,4 +18,13 @@ module.exports = merge(common, {
     // 编译前清除目录
     clean: true
   },
+  devServer: {
+    // 告诉服务器位置。
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    port: 8888,
+    hot: true,
+  },
+  devtool: 'eval-cheap-module-source-map',
 })
