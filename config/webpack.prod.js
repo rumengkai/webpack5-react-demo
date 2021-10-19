@@ -3,6 +3,7 @@
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 const { resolveApp } = require('./paths');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = merge(common, {
   mode: 'production',
@@ -16,5 +17,9 @@ module.exports = merge(common, {
 
     // 编译前清除目录
     clean: true
-  }
+  },
+  plugins:[
+    // 打包体积分析
+    new BundleAnalyzerPlugin()
+  ]
 })

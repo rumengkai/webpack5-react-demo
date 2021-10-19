@@ -4,8 +4,14 @@ const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 const { resolveApp } = require('./paths');
 const path = require('path')
+const webpack = require('webpack')
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
-module.exports = merge(common, {
+const smp = new SpeedMeasurePlugin();
+const isNeedSpeed = true
+
+const config = merge(common, {
   mode: 'development',
   // 输出
   output: {
@@ -23,8 +29,14 @@ module.exports = merge(common, {
     static: {
       directory: path.join(__dirname, 'dist'),
     },
-    port: 8888,
+    port: 8899,
     hot: true,
   },
   devtool: 'eval-cheap-module-source-map',
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin(),
+  ],
 })
+
+module.exports = isNeedSpeed ? smp.wrap(config) : config

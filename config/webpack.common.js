@@ -2,6 +2,8 @@
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const paths = require('./paths');
+const chalk = require('chalk')
+const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 
 module.exports = {
   // 入口
@@ -30,12 +32,8 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              // Enable CSS Modules features
               modules: true,
               importLoaders: 2,
-              // 0 => no loaders (default);
-              // 1 => postcss-loader;
-              // 2 => postcss-loader, sass-loader
             },
           },
           // 将 PostCSS 编译成 CSS
@@ -77,5 +75,11 @@ module.exports = {
       title: 'webpack',
       template: paths.appSrc + '/index.html'
     }),
+    new ProgressBarPlugin({
+      format: `  :msg [:bar] ${chalk.green.bold(':percent')} (:elapsed s)`
+    })
   ],
+  cache: {
+    type: 'filesystem', // 使用文件缓存
+  },
 }
