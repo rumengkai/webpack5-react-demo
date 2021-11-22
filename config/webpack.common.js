@@ -5,6 +5,7 @@ const paths = require('./paths');
 const chalk = require('chalk')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const BundleSizePlugin = require(paths.resolveApp('plugin')+'/BundleSizePlugin');
 
 const ctx = {
   isEnvDevelopment: process.env.NODE_ENV === 'development',
@@ -124,7 +125,8 @@ module.exports = {
     new ProgressBarPlugin({
       format: `  :msg [:bar] ${chalk.green.bold(':percent')} (:elapsed s)`
     }),
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin(),
+    new BundleSizePlugin({ limit: 3 })
   ],
   cache: {
     type: 'filesystem', // 使用文件缓存
