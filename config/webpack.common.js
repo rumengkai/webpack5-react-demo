@@ -17,7 +17,7 @@ const { isEnvDevelopment, isEnvProduction } = ctx
 module.exports = {
   // 入口
   entry: {
-    index: './src/index',
+    index: './src/main',
   },
   output: {
     pathinfo: false,
@@ -93,6 +93,23 @@ module.exports = {
               loader: 'tsx',
               target: 'es2015',
             },
+          }
+        ]
+      },
+      {
+        test: /\.md$/,
+        use: [
+          {
+            loader: paths.resolveApp('loaders') + '/html-color-loader',
+            options: {
+              text: 'world'
+            }
+          },
+          {
+            loader: paths.resolveApp('loaders') + '/md-loader',
+            options: {
+              headerIds: false
+            }
           }
         ]
       }
