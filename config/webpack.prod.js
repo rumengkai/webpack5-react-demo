@@ -32,7 +32,7 @@ module.exports = merge(common, {
   },
   plugins: [
     // 打包体积分析
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
     // 抽离
     new MiniCssExtractPlugin({
       filename: "[hash].[name].css",
