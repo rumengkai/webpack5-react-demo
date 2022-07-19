@@ -2,11 +2,14 @@
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const paths = require("./paths");
+const path = require("path");
 const chalk = require("chalk");
 const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const isDevelopment = process.env.NODE_ENV !== "production";
 
+const resolve = (dir) => {
+  return path.resolve(process.cwd(), dir);
+};
 const ctx = {
   isEnvDevelopment: process.env.NODE_ENV === "development",
   isEnvProduction: process.env.NODE_ENV === "production",
@@ -14,16 +17,31 @@ const ctx = {
 
 const { isEnvDevelopment, isEnvProduction } = ctx;
 
+// 样式的数组的
+const cssLoaderAry = [
+  "css-hot-loader",
+  isEnvProduction ? MiniCssExtractPlugin.loader : "style-loader",
+  // "css-loader",
+  {
+    loader: "css-loader",
+    options: {
+      modules: false,
+    },
+  },
+  "postcss-loader",
+];
 module.exports = {
   // 入口
   entry: {
     index: "./src/index",
   },
   output: {
+    path: resolve("dist"), // string
     pathinfo: false,
-    filename: ctx.isEnvProduction
-      ? "[name].[contenthash].bundle.js"
-      : "[name].bundle.js",
+    publicPath: "/", // root Dir
+    sourceMapFilename: "[name].map",
+    chunkFilename: "static/js/[name].[chunkhash:8].js",
+    filename: "static/js/[name].[contenthash:8].js",
   },
 
   resolve: {
@@ -42,34 +60,30 @@ module.exports = {
         type: "asset/resource",
       },
       {
-        test: /\.s[ac]ss$/i,
-        include: paths.appSrc,
+        test: /\.css$/,
+        use: cssLoaderAry,
+      },
+      {
+        test: /\.less$/i,
         use: [
-          // 将 JS 字符串生成为 style 节点
-          "style-loader",
-          isEnvProduction && MiniCssExtractPlugin.loader, // 仅生产环境
-          // 将 CSS 转化成 CommonJS 模块
+          ...cssLoaderAry,
           {
-            loader: "css-loader",
+            loader: "less-loader",
             options: {
-              modules: true,
-              importLoaders: 2,
-            },
-          },
-          // 将 PostCSS 编译成 CSS
-          {
-            loader: "postcss-loader",
-            options: {
-              postcssOptions: {
-                plugins: [
-                  [
-                    // postcss-preset-env 包含 autoprefixer
-                    "postcss-preset-env",
-                  ],
-                ],
+              lessOptions: {
+                exclude: /node_modules/,
+                // modifyVars: theme, // 自定义主题的
+                javascriptEnabled: true,
               },
             },
           },
+        ],
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        include: paths.appSrc,
+        use: [
+          ...cssLoaderAry,
           {
             loader: "thread-loader",
             options: {
@@ -85,10 +99,9 @@ module.exports = {
         include: paths.appSrc,
         use: [
           {
-            loader: "esbuild-loader",
+            loader: "babel-loader",
             options: {
-              loader: "tsx",
-              target: "es2015",
+              cacheDirectory: true,
             },
           },
         ],
@@ -104,9 +117,11 @@ module.exports = {
     new ProgressBarPlugin({
       format: `  :msg [:bar] ${chalk.green.bold(":percent")} (:elapsed s)`,
     }),
-    new MiniCssExtractPlugin(),
   ],
   cache: {
     type: "filesystem", // 使用文件缓存
+  },
+  resolve: {
+    extensions: [".jsx", ".js", ".css", ".tsx"],
   },
 };

@@ -1,13 +1,6 @@
 import React from "react";
-import "@/assets/css/test.module.scss";
-import Hello from "@/components/Hello";
-import HelloWorld from '@/components/HelloWorld';
+import Layouts from "@/layouts";
 
 export default function App() {
-  return (
-    <div>
-      <Hello />
-      <HelloWorld></HelloWorld>
-    </div>
-  );
+  return <Layouts></Layouts>;
 }

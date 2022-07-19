@@ -38,9 +38,9 @@ module.exports = merge(common, {
       filename: "[hash].[name].css",
     }),
     // CSS Tree Shaking
-    new PurgeCSSPlugin({
-      paths: glob.sync(`${paths.appSrc}/**/*`,  { nodir: true }),
-    }),
+    // new PurgeCSSPlugin({
+    //   paths: glob.sync(`${paths.appSrc}/**/*`,  { nodir: true }),
+    // }),
   ],
   optimization: {
     runtimeChunk: true,
